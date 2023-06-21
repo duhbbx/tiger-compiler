@@ -7,34 +7,34 @@
 
 int yylex(void); /* function prototype */
 
+
 A_exp absyn_root;
 
-void yyerror(char *s)
-{
- EM_error(EM_tokPos, "%s", s);
+void yyerror(char *s) {
+    EM_error(EM_tokPos, "%s", s);
 }
 %}
 
 
 %union {
-  int           pos;
-  int           ival;
-  string        sval;
-  A_var         var;
-  A_exp         exp;
-  A_dec         dec;
-  A_ty          ty;
-  A_decList     dec_list;
-  A_expList     exp_list;
-  A_field       field;
-  A_fieldList   field_list;
-  A_fundec      fundec;
-  A_fundecList  fundec_list;
-  A_namety      namety;
-  A_nametyList  namety_list;
-  A_efield      efield;
-  A_efieldList  efield_list;
-	}
+    int           pos;
+    int           ival;
+    string        sval;
+    A_var         var;
+    A_exp         exp;
+    A_dec         dec;
+    A_ty          ty;
+    A_decList     dec_list;
+    A_expList     exp_list;
+    A_field       field;
+    A_fieldList   field_list;
+    A_fundec      fundec;
+    A_fundecList  fundec_list;
+    A_namety      namety;
+    A_nametyList  namety_list;
+    A_efield      efield;
+    A_efieldList  efield_list;
+}
 
 %token <sval> ID STRING
 %token <ival> INT
