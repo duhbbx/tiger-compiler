@@ -39,7 +39,7 @@ void EM_newline(void) {
     linePos = intList(EM_tokPos, linePos);
 }
 
-void EM_error(int pos, char *message, ...) {
+void EM_error(int pos, string message, ...) {
     va_list ap;
     IntList lines = linePos;
     int num = lineNum;
@@ -60,6 +60,9 @@ void EM_error(int pos, char *message, ...) {
     fprintf(stderr, "\n");
 }
 
+/**
+ * 重置错误输出的一些参数
+ */
 void EM_reset(string fname) {
     anyErrors = FALSE;
     fileName = fname;
@@ -70,4 +73,9 @@ void EM_reset(string fname) {
         EM_error(0, "cannot open");
         exit(1);
     }
+}
+
+
+void EM_impossible(string str, ...) {
+    printf("暂未实现此函数...............str = %s\n", str);
 }

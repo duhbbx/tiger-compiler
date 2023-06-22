@@ -64,6 +64,9 @@ void yyerror(char *s) {
 %type <efield_list> efield_list efield_list_
 %type <var>         lvalue
 
+
+
+/* 指明文法的入口是program */
 %start program
 
 %nonassoc DO OF
@@ -79,8 +82,11 @@ void yyerror(char *s) {
 %left     UMINUS
 %%
 
+/* 将exp这个解析出来的值赋值给absyn_root，也就是抽象语法树的根节点，$1指的就是产生式右边的第一个部分 */
 program: exp {absyn_root=$1;}
 
+
+/* 有多少种表达式的类型 */
 exp
     : var_exp                           {$$ = $1;}
     | nil_exp                           {$$ = $1;}
@@ -98,21 +104,27 @@ exp
     | let_exp                           {$$ = $1;}
     | array_exp                         {$$ = $1;}
 
+/* 变量表达式 */
 var_exp
-    : lvalue                            {$$ = A_VarExp(EM_tokPos,$1);}
+    : lvalue                            {$$ = A_VarExp(EM_tokPos, $1);}
 
+/* 空指针表达式 */
 nil_exp
     : NIL                               {$$ = A_NilExp(EM_tokPos);}
 
+/* 整型表达式 */
 int_exp
-    : INT                               {$$ = A_IntExp(EM_tokPos,$1);}
+    : INT                               {$$ = A_IntExp(EM_tokPos, $1);}
 
+/* 字符串表达式 */
 str_exp
-    : STRING                            {$$ = A_StringExp(EM_tokPos,$1);}
+    : STRING                            {$$ = A_StringExp(EM_tokPos, $1);}
 
+/* 函数调用表达式 */
 call_exp
-    : ID LPAREN arg_list RPAREN         {$$ = A_CallExp(EM_tokPos,S_Symbol($1),$3);}
+    : ID LPAREN arg_list RPAREN         {$$ = A_CallExp(EM_tokPos, S_Symbol($1), $3);}
 
+/* 操作符表达式 */
 op_exp
     : exp PLUS exp                      {$$ = A_OpExp(EM_tokPos,A_plusOp,$1,$3);}
     | exp MINUS exp                     {$$ = A_OpExp(EM_tokPos,A_minusOp,$1,$3);}
@@ -126,30 +138,38 @@ op_exp
     | exp LE exp                        {$$ = A_OpExp(EM_tokPos,A_leOp,$1,$3);}
     | MINUS exp       %prec UMINUS      {$$ = A_OpExp(EM_tokPos,A_minusOp,A_IntExp(EM_tokPos,0),$2);}
 
+/* 记录表达式 */
 record_exp
     : ID LBRACE efield_list RBRACE      {$$ = A_RecordExp(EM_tokPos,S_Symbol($1),$3);}
 
+/* 执行序列表达式 */
 seq_exp
     : LPAREN seq_list RPAREN            {$$ = A_SeqExp(EM_tokPos,$2);}
 
+/* 赋值表达式 */
 assign_exp
     : lvalue ASSIGN exp                 {$$ = A_AssignExp(EM_tokPos,$1,$3);}
 
+/* if表达式 */
 if_exp
     : IF exp THEN exp ELSE exp          {$$ = A_IfExp(EM_tokPos,$2,$4,$6);}
     | IF exp THEN exp                   {$$ = A_IfExp(EM_tokPos,$2,$4,NULL);}
     | exp AND exp                       {$$ = A_IfExp(EM_tokPos,$1,$3,A_IntExp(EM_tokPos,0));}
     | exp OR exp                        {$$ = A_IfExp(EM_tokPos,$1,A_IntExp(EM_tokPos,1),$3);}
 
+/* while表达式 */
 while_exp
     : WHILE exp DO exp                  {$$ = A_WhileExp(EM_tokPos,$2,$4);}
 
+/* for循环表达式 */
 for_exp
     : FOR ID ASSIGN exp TO exp DO exp   {$$ =A_ForExp(EM_tokPos,S_Symbol($2),$4,$6,$8);}
 
+/* break表达式 */
 break_exp
     : BREAK                             {$$ = A_BreakExp(EM_tokPos);}
 
+/* let表达式 */
 let_exp
     : LET dec_list IN seq_list END      {$$ = A_LetExp(EM_tokPos,$2,A_SeqExp(EM_tokPos,$4));}
 

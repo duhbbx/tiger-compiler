@@ -4,11 +4,19 @@
 #include <stdio.h>
 #include <string.h>
 
+
+/**
+ * 符号表用链表来记录
+ */
 struct S_symbol_ {
     string name;
     S_symbol next;
 };
 
+
+/**
+ * 创建一个符号 
+ */
 static S_symbol mksymbol(string name, S_symbol next) {
     S_symbol s = checked_malloc(sizeof(*s));
     s->name = name;
@@ -18,8 +26,14 @@ static S_symbol mksymbol(string name, S_symbol next) {
 
 #define SIZE 109 /* should be prime */
 
+/**
+ * 哈希表
+ */
 static S_symbol hashtable[SIZE];
 
+/**
+ * 计算字符串的哈希值
+ */
 static unsigned int hash(char *s0) {
     unsigned int h = 0;
     char *s;
@@ -28,8 +42,15 @@ static unsigned int hash(char *s0) {
     return h;
 }
 
+/**
+ * 判断两个字符串是否相等
+ */
 static int streq(string a, string b) { return !strcmp(a, b); }
 
+
+/**
+ * 根据名字从符号表中获取符号
+ */
 S_symbol S_Symbol(string name) {
     int index = hash(name) % SIZE;
     S_symbol syms = hashtable[index], sym;

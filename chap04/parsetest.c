@@ -10,18 +10,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// bison或者yacc生成的解析函数
 extern int yyparse(void);
+
+// 抽象语法树的根节点
 extern A_exp absyn_root;
+
+// 打印表达式
 extern void pr_exp(FILE *out, A_exp v, int d);
 
-/* parse source file fname;
-   return abstract syntax data structure */
+/**
+ * parse source file fname;
+ * return abstract syntax data structure
+ */
 A_exp parse(string fname) {
     EM_reset(fname);
-    if (yyparse() == 0) /* parsing worked */
+    /* parsing worked，yyparse是bison生成的，取决于.y文件的动作 */
+    if (yyparse() == 0) {
         return absyn_root;
-    else
+    } else {
         return NULL;
+    }
 }
 
 int main(int argc, char **argv) {
