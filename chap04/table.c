@@ -9,6 +9,8 @@
 
 #define TABSIZE 127
 
+
+// 定义绑定
 typedef struct binder_ *binder;
 struct binder_ {
     void *key;
@@ -16,6 +18,8 @@ struct binder_ {
     binder next;
     void *prevtop;
 };
+
+
 struct TAB_table_ {
     binder table[TABSIZE];
     void *top;
@@ -52,6 +56,8 @@ void TAB_enter(TAB_table t, void *key, void *value) {
     int index;
     assert(t && key);
     index = ((unsigned)key) % TABSIZE;
+
+    // 将key value绑定到这个tab_table上
     t->table[index] = Binder(key, value, t->table[index], t->top);
     t->top = key;
 }

@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 /**
  * 符号表用链表来记录
  */
@@ -13,9 +12,8 @@ struct S_symbol_ {
     S_symbol next;
 };
 
-
 /**
- * 创建一个符号 
+ * 创建一个符号
  */
 static S_symbol mksymbol(string name, S_symbol next) {
     S_symbol s = checked_malloc(sizeof(*s));
@@ -47,16 +45,24 @@ static unsigned int hash(char *s0) {
  */
 static int streq(string a, string b) { return !strcmp(a, b); }
 
-
 /**
  * 根据名字从符号表中获取符号
  */
 S_symbol S_Symbol(string name) {
+
+    // 哈希值取模
     int index = hash(name) % SIZE;
+
+    // 设置啥意思？
+    // 哦原来是声明变量用的
     S_symbol syms = hashtable[index], sym;
+
+    // 根据符号名字找到对应的符号
     for (sym = syms; sym; sym = sym->next)
         if (streq(sym->name, name))
             return sym;
+
+    // 找不到则创建新的符号
     sym = mksymbol(name, syms);
     hashtable[index] = sym;
     return sym;
@@ -72,7 +78,11 @@ void *S_look(S_table t, S_symbol sym) { return TAB_look(t, sym); }
 
 static struct S_symbol_ marksym = {"<mark>", 0};
 
-void S_beginScope(S_table t) { S_enter(t, &marksym, NULL); }
+
+// 进入到一个定义域中去了，然后将一个标记推入到这个作用域中
+void S_beginScope(S_table t) {
+    S_enter(t, &marksym, NULL);
+}
 
 void S_endScope(S_table t) {
     S_symbol s;
